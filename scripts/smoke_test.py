@@ -1,4 +1,4 @@
-"""Сквозной сценарий: TEST_DATABASE_URL=... python -m scripts.smoke_test."""
+
 
 import os
 import sys
@@ -20,7 +20,7 @@ from app.timeutil import SAMARA
 
 
 class OfflineMAX:
-    """Перехватывает ответы интерфейса без HTTP, токена и реальных адресатов."""
+    
 
     def __init__(self):
         self.messages = []
@@ -47,7 +47,7 @@ class OfflineMAX:
 
 class Journey(unittest.TestCase):
     def test_student_journey(self):
-        # Только явно заданная тестовая база, без .env или рабочего DATABASE_URL.
+
         dsn = local_dsn(
             {"TEST_DATABASE_URL": os.environ["TEST_DATABASE_URL"]}, "TEST_DATABASE_URL"
         )
@@ -160,7 +160,7 @@ class Journey(unittest.TestCase):
                     ).fetchall(),
                     [(student, "reminder", "pending")],
                 )
-            # Новые соединения и Router проверяют восстановление после перезапуска.
+            
             restarted = Database(db.dsn)
             restarted.check_schema()
             build_router(Deps.create(client, restarted, admin)).dispatch(
