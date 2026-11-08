@@ -1,4 +1,4 @@
-"""Регистрация: /start и выбор учебной группы."""
+
 
 import logging
 import re
@@ -61,8 +61,7 @@ def prefixes_keyboard(groups, offset=0):
         rows.append(
             [callback_button("Другие направления", f"group_prefix_page:{offset + 40}")]
         )
-    # «Назад» с этого экрана вела бы к выбору учебного заведения, а «🏠 Домой»
-    # для незарегистрированного студента открывает тот же экран.
+
     return inline_keyboard(rows)
 
 
