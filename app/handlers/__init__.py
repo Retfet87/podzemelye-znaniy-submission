@@ -1,10 +1,3 @@
-"""Обработчики событий MAX.
-
-Порядок в списке важен для сообщений: сначала команды администратора, затем
-активные диалоги (мероприятия, задания), и только потом /start.
-Кнопки (callback) различаются по префиксу payload, поэтому порядок для них неважен.
-"""
-
 from app.handlers.admin import AdminHandler
 from app.handlers.community import CommunityHandler
 from app.handlers.context import Context, Deps
