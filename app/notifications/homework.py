@@ -1,11 +1,10 @@
-"""Очередь уведомлений о домашних заданиях."""
+
 
 from app.timeutil import format_deadline
 
 
 def prepare(conn):
-    # Build reminder jobs only when due, using current membership. Missing the
-    # 24-hour window leaves the 3-hour reminder, and expired tasks generate none.
+
     conn.execute("""
         INSERT INTO homework_notifications
             (homework_id, user_id, kind, version, next_attempt, valid_until)
