@@ -1,4 +1,4 @@
-"""Точка сборки: читает настройки, создаёт зависимости и запускает бота."""
+
 
 import logging
 from threading import Event, Thread
