@@ -1,4 +1,3 @@
-"""Часовой пояс колледжа и разбор/вывод сроков."""
 
 from datetime import datetime
 from zoneinfo import ZoneInfo
