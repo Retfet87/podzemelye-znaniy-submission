@@ -1,4 +1,4 @@
-"""Очередь уведомлений о мероприятиях."""
+
 
 from app.services.events import event_text
 
