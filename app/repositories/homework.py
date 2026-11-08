@@ -1,4 +1,4 @@
-"""Домашние задания: хранение, права доступа и настройки уведомлений."""
+
 
 from app.db.locks import HOMEWORK_LOCK
 from app.services.file_validation import validate_data
@@ -18,7 +18,7 @@ EDITABLE = """(h.owner_id = %(actor)s OR (h.owner_id IS NULL AND a.can_manage))"
 ACCESS = """homework_access(%(actor)s, %(administrator)s) a"""
 SCOPED = f"""LEFT JOIN {ACCESS} ON a.group_id = h.group_id"""
 MANAGES = f"""EXISTS (SELECT 1 FROM {ACCESS} WHERE a.group_id = h.group_id AND a.can_manage)"""
-# Предметы берём из последней базы и ещё действующих замен на конкретные даты.
+
 SUBJECTS = """
     SELECT DISTINCT l.subject
     FROM schedule_lessons l JOIN schedule_imports i ON i.id = l.import_id
@@ -47,7 +47,7 @@ class HomeworkStore:
         self.context = {"actor": actor, "administrator": administrator}
 
     def due_count(self, now, until):
-        """Сроки своей группы и личных заданий в полуинтервале; без чужих админских групп."""
+
         with self.store.connect() as conn:
             return conn.execute(
                 f"""SELECT count(*) FROM homework h {SCOPED}
@@ -64,8 +64,7 @@ class HomeworkStore:
                     ORDER BY member DESC, group_name, group_id""",
                 self.context | {"shared": shared},
             ).fetchall()
-            # Если пользователь зарегистрирован в группе (member=True),
-            # для просмотра заданий используем сразу его группу без лишнего выбора.
+
             member_rows = [
                 (gid, name, can_manage)
                 for gid, name, can_manage, is_member in rows
