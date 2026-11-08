@@ -1,4 +1,4 @@
-"""Приватный статус: python -m scripts.health /private/path/health.json."""
+
 
 import argparse
 import json
