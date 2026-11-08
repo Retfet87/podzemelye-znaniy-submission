@@ -1,5 +1,3 @@
-"""Конфигурация: чтение .env, TLS-контекст для MAX и настройки администратора."""
-
 import os
 import re
 import ssl
@@ -9,7 +7,7 @@ PROJECT_DIR = Path(__file__).resolve().parent.parent
 
 
 def load_config(path=PROJECT_DIR / ".env"):
-    """Читает локальный .env или разрешённые настройки Docker Compose."""
+
     if os.environ.get("BOT_CONFIG_MODE") == "compose":
         keys = (
             "BOT_HEALTH_FILE",
