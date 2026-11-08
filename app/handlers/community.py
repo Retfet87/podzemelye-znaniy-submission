@@ -1,5 +1,3 @@
-"""Диалоги «Мероприятия» и «Полезное»: списки, запись, предложение, публикация и удаление."""
-
 from dataclasses import dataclass, field
 from datetime import datetime
 from time import monotonic
