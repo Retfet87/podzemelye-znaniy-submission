@@ -1,5 +1,3 @@
-"""Локальный статус без пользовательских данных, токенов и публичного порта."""
-
 import json
 import logging
 import math
@@ -137,7 +135,6 @@ class HealthState:
 
 
 def read_status(path, *, now=None, max_age=120):
-    """Статус читает только владелец обычного файла 0600; симлинки запрещены."""
     if not math.isfinite(max_age) or max_age <= 0:
         raise ValueError("max_age должен быть положительным.")
     fd = os.open(Path(path).expanduser(), os.O_RDONLY | os.O_NOFOLLOW)
