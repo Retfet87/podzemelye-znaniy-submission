@@ -71,6 +71,7 @@ INSERT INTO form_drafts SELECT 900000001,'homework',
 SQL
 compose down
 compose up -d migrate
+database=$(compose ps -q postgres)
 test "$(compose exec -T postgres psql -U podzemelye -d podzemelye_test -Atc "SELECT encode(data,'hex') FROM delivery_probe")" = 68656c6c6f
 test "$(compose exec -T postgres psql -U podzemelye -d podzemelye_test -Atc "SELECT count(*) FROM form_drafts")" = 1
 run_test python - <<'PYCODE'
