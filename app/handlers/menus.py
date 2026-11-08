@@ -1,5 +1,3 @@
-"""Главное меню, меню расписания и меню домашних заданий."""
-
 import os
 
 from app.max_api.keyboards import callback_button, inline_keyboard
@@ -39,10 +37,10 @@ _PERIODS = [
     [callback_button("📆 В календарь", "calendar:week")],
 ]
 
-# Сам экран «Расписание»: «Назад» здесь вела бы на этот же экран, поэтому её нет.
+
 SCHEDULE_MENU = inline_keyboard(_PERIODS)
 
-# Экран с результатом (сегодня / завтра / неделя): «Назад» возвращает в меню расписания.
+
 MENU = inline_keyboard(_PERIODS + [[callback_button("Назад", "schedule:open")]])
 
 
