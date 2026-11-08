@@ -1,5 +1,3 @@
-"""Подключение к локальной PostgreSQL."""
-
 from pathlib import Path
 from contextlib import contextmanager
 from contextvars import ContextVar
@@ -14,7 +12,7 @@ try:
     from psycopg_pool import ConnectionPool
 except ImportError:
     ConnectionPool = (
-        None  # Без опционального пула остаются доступны прямые подключения.
+        None  
     )
 
 
@@ -57,7 +55,6 @@ def local_dsn(config, key="DATABASE_URL"):
 
 
 class Database:
-    """Фабрика соединений. Репозитории получают её и сами открывают транзакции."""
 
     def __init__(self, dsn, *, pool_size=0, pool_timeout=5):
         if type(pool_size) is not int or not 0 <= pool_size <= 16:
@@ -110,14 +107,14 @@ class Database:
 
     @contextmanager
     def _borrowed_connection(self):
-        # Savepoint изолирует пойманную ошибку репозитория, не завершая транзакцию формы.
+
         conn = self._scope.get()
         with conn.transaction():
             yield conn
 
     @contextmanager
     def unit_of_work(self):
-        """Публикация и закрытие формы выполняются в одной транзакции."""
+        
         if self._scope.get() is not None:
             raise RuntimeError("Nested unit of work is unsupported")
         with self.connect() as conn:
@@ -132,7 +129,6 @@ class Database:
         self._pool.open()
         conn = self._pool.getconn()
         try:
-            # __exit__ завершает транзакцию; явный commit очереди остаётся допустимым.
             with conn:
                 yield conn
         finally:
@@ -149,8 +145,6 @@ class Database:
 
     @staticmethod
     def _reset(conn):
-        # Освобождаем сессионные блокировки ДО возврата в пул: фоновый reset
-        # мог бы не выполниться при немедленном закрытии пула.
         if conn.info.transaction_status != TransactionStatus.IDLE:
             conn.rollback()
         try:
@@ -163,7 +157,6 @@ class Database:
         conn.read_only = None
         conn.deferrable = None
         conn.prepare_threshold = None
-        # После DISCARD ALL нельзя использовать клиентский кеш prepared statements.
 
     def close(self):
         if self._pool is not None:
@@ -181,7 +174,6 @@ class Database:
         self.close()
 
     def reject_demo(self):
-        """Обычный вход бота и web не допускает DEMO-базу."""
         with self.connect() as conn:
             if conn.execute("SELECT to_regclass('demo_environment')").fetchone()[0]:
                 raise ValueError(
