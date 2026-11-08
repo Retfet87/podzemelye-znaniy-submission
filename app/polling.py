@@ -1,4 +1,3 @@
-"""Long Polling: получение событий MAX и передача их роутеру."""
 
 import logging
 import time
@@ -53,7 +52,6 @@ def run_polling(client, router, *, health=None, guard=None):
             except MaxError as error:
                 if error.status in (None, 401) and not error.retryable:
                     raise
-                # При обрыве связи сервер мог уже принять POST.
                 logger.warning("Ответ на событие не подтверждён. %s", error)
 
         if next_marker is not None:
