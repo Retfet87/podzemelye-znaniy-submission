@@ -1,8 +1,6 @@
-"""Построители inline-клавиатур MAX."""
-
 BACK_LABEL = "⬅️ Назад"
 
-# Эти payload ведут в главное меню — туда же ведёт «🏠 Домой».
+
 MAIN_MENU_PAYLOADS = frozenset({"nav:home", "hw:back", "community:back"})
 
 
@@ -17,18 +15,13 @@ def callback_button(text, payload):
 
 
 def is_redundant_back(button):
-    """«Назад», которая приводит в главное меню, дублирует «Домой»."""
     return (
         button.get("text") == BACK_LABEL and button.get("payload") in MAIN_MENU_PAYLOADS
     )
 
 
 def inline_keyboard(rows, *, home=True):
-    """rows — список рядов, в каждом ряду список кнопок (словарей).
-
-    Если добавляется «🏠 Домой», «Назад» в главное меню убирается: она вела бы
-    на тот же экран, что и «Домой».
-    """
+    
     rows = [list(row) for row in rows]
     if home:
         rows = [
@@ -42,7 +35,7 @@ def inline_keyboard(rows, *, home=True):
 
 
 def vertical_keyboard(buttons, *, prefix=""):
-    """По одной кнопке в ряд. buttons — пары (подпись, payload без префикса)."""
+    
     if not buttons:
         return []
     return inline_keyboard(
