@@ -1,5 +1,3 @@
-"""Календарь выдаётся только для группы подтверждённого пользователя."""
-
 from datetime import date, timedelta
 
 from app.handlers.base import Handler
