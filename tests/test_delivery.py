@@ -1,4 +1,4 @@
-"""Минимальные контракты поставки; никаких запросов к настоящему MAX."""
+
 import importlib
 import os
 import pkgutil
