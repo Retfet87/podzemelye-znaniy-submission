@@ -1,0 +1,66 @@
+name: Verify and publish jury delivery
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  delivery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Fetch regression tests of the exact source release
+        run: |
+          python - <<'PYCODE'
+          import io,tarfile,urllib.request
+          from pathlib import Path
+          sha='e03fdd4f7beb65329b99891cdab1eb4f1d448d1a'
+          names='backup calendar_export community date_picker db form_drafts health homework main navigation official_schedule personal_questions refactor_contracts resilience review schedule today updates'.split()
+          allowed={'tests/helpers.py'}|{'tests/test_'+n+'.py' for n in names}
+          dest=Path('.validation-tests');dest.mkdir()
+          data=urllib.request.urlopen('https://api.github.com/repos/Retfet87/podzemelye-znaniy/tarball/'+sha,timeout=60).read()
+          with tarfile.open(fileobj=io.BytesIO(data),mode='r:gz') as tar:
+              for member in tar.getmembers():
+                  relative=member.name.partition('/')[2]
+                  if relative in allowed and member.isfile():
+                      (dest/Path(relative).name).write_bytes(tar.extractfile(member).read())
+          assert len(list(dest.glob('*.py')))==len(allowed)
+          PYCODE
+      - name: Clean Docker build and isolated checks
+        run: sh scripts/check_delivery.sh
+      - name: Audit image contents
+        run: |
+          docker run --rm podzemelye-jury:tested python -c 'from pathlib import Path; p=Path("/app"); assert not any(p.rglob(".env*")); assert not (p/"tests").exists(); assert not (p/"demo-site").exists(); assert len(list((p/"migrations").glob("*.sql")))==7'
+      - name: Publish tested image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        id: registry
+        env:
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          image="ghcr.io/${GITHUB_REPOSITORY,,}"
+          printf '%s' "$REGISTRY_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker tag podzemelye-jury:tested "$image:$GITHUB_SHA"
+          docker tag podzemelye-jury:tested "$image:latest"
+          docker push "$image:$GITHUB_SHA"
+          docker push "$image:latest"
+          reference=$(docker image inspect --format '{{index .RepoDigests 0}}' "$image:$GITHUB_SHA")
+          printf 'reference=%s\n' "$reference" >> "$GITHUB_OUTPUT"
+          printf 'Verified image: `%s`\n' "$reference" >> "$GITHUB_STEP_SUMMARY"
+      - name: Anonymous pull
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          DOCKER_CONFIG: ${{ runner.temp }}/anonymous-docker
+          IMAGE_REFERENCE: ${{ steps.registry.outputs.reference }}
+        run: |
+          mkdir -p "$DOCKER_CONFIG"
+          docker pull "$IMAGE_REFERENCE"
+          docker run --rm "$IMAGE_REFERENCE" python -c 'import app.bootstrap; import app.handlers; import psycopg; import xlrd; import PIL'
