@@ -15,7 +15,7 @@ def number(value, *, zero=False):
 
 
 class DraftStore(dict):
-    """Черновики по MAX ID: ограничены по времени жизни и по количеству."""
+
 
     def __init__(self, limit_message="Слишком много черновиков. Попробуй позже."):
         super().__init__()
