@@ -1,4 +1,4 @@
-"""Контекстные вопросы после команд, активных форм и основных разделов."""
+
 
 from datetime import datetime, time, timedelta
 
