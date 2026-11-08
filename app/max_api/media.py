@@ -1,5 +1,3 @@
-"""Загрузка фото и видео MAX с общей проверкой разрешённых CDN-адресов."""
-
 import json
 from pathlib import Path
 from uuid import uuid4
