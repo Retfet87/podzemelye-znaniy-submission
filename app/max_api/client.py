@@ -1,4 +1,4 @@
-"""HTTP-клиент платформы MAX (Long Polling, отправка сообщений, ответы на кнопки)."""
+
 
 import http.client
 import json
@@ -103,11 +103,9 @@ class MaxClient:
         return result
 
     def receive_file(self, attachment):
-        """Скачивает вложение-файл из сообщения пользователя."""
         return files.receive_file(self.context, attachment)
 
     def upload_file(self, name, data):
-        """Загружает файл в MAX и возвращает вложение для send_message."""
         return files.upload_file(self, name, data)
 
     def welcome_attachment(self):
