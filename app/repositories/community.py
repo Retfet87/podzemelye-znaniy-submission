@@ -1,5 +1,3 @@
-"""Мероприятия и полезные материалы: хранение и права доступа."""
-
 from collections import defaultdict
 
 from app.db.locks import EVENT_LOCK
@@ -280,7 +278,6 @@ class CommunityStore:
             )
 
     def schedule_teachers(self, group_only: bool):
-        """Собирает преподавателей, их предметы и кабинеты из актуального расписания XLS."""
         with self.store.connect() as conn:
             user_group = conn.execute(
                 """SELECT g.id, g.name FROM users u JOIN groups g ON g.id = u.group_id
