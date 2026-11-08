@@ -1,4 +1,4 @@
-"""Настоящий bootstrap с подставным MAX; используется только тестами поставки."""
+
 import os
 import time
 from unittest.mock import patch
