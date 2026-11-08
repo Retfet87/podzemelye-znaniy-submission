@@ -1,5 +1,3 @@
-"""Команды управления: миграции, группы, импорт расписания."""
-
 import argparse
 from collections import Counter
 from datetime import date
