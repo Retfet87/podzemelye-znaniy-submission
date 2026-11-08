@@ -1,4 +1,4 @@
-"""Надёжная доставка уведомлений в MAX. Сессионная блокировка согласует всех отправителей."""
+
 
 import logging
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def deliver_one(store, send, max_error, *, homework=True, schedule=True, events=False):
     with store.connect() as conn:
-        # DEMO нельзя отправлять даже при ошибочно включённых флагах рассылки.
+       
         if conn.execute("SELECT to_regclass('demo_environment')").fetchone()[0]:
             return False
         if not conn.execute(
@@ -24,7 +24,7 @@ def deliver_one(store, send, max_error, *, homework=True, schedule=True, events=
         ).fetchone()[0]:
             return False
         if homework:
-            # Держим блокировку до отправки, согласуя её с удалением, правкой и настройками.
+            
             conn.execute("SELECT pg_advisory_lock(%s)", (HOMEWORK_LOCK,))
             homework_queue.prepare(conn)
         if events:
@@ -48,7 +48,7 @@ def deliver_one(store, send, max_error, *, homework=True, schedule=True, events=
             candidates.append((task[3], 2, "homework"))
         if not candidates:
             return False
-        # При равном времени сохраняем прежний порядок: событие, расписание, задание.
+
         _, _, queue = min(candidates)
         if queue == "event":
             job, user, attempts, _, body, eligible = event
