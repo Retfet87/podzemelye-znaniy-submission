@@ -1,4 +1,4 @@
-"""Диалог «Домашние задания»: списки, создание и правка, роли администраторов, уведомления."""
+
 
 from dataclasses import dataclass, field
 from datetime import datetime
