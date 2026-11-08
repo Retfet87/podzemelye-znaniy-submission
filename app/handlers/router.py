@@ -1,5 +1,3 @@
-"""Роутер: разбирает событие и отдаёт его первому подходящему обработчику."""
-
 import logging
 
 from app.handlers.context import Context
@@ -23,8 +21,7 @@ class Router:
     def dispatch(self, update):
         try:
             ctx = Context.parse(self.deps, update)
-            # Реальные формы сохраняются в общей транзакции; подставные зависимости
-            # позволяют проверить маршрутизацию без PostgreSQL.
+
             if isinstance(self.deps.db, Database) and ctx.private and ctx.actor:
                 with self.deps.db.unit_of_work() as conn:
                     locked = conn.execute(
@@ -42,7 +39,7 @@ class Router:
             else:
                 self._dispatch(ctx)
         except MaxError:
-            # Повторы и фатальные ошибки авторизации обрабатывает polling.
+            
             raise
         except psycopg.Error:
             if self.deps.health is not None:
@@ -52,7 +49,7 @@ class Router:
         except Exception:
             if self.deps.health is not None:
                 self.deps.health.handler_error()
-            # Текст события, вложения и токены не должны попадать в журнал.
+            
             logger.exception("Unexpected handler failure")
             self._error_reply(
                 update, "Что-то пошло не так. Попробуй ещё раз или нажми «Домой»."
@@ -73,7 +70,6 @@ class Router:
         except MaxError:
             raise
         except Exception:
-            # Неудачный ответ об ошибке не должен зациклить обработку или остановить polling.
             logger.exception("Unable to send handler error response")
 
     def _dispatch(self, ctx):
@@ -185,7 +181,6 @@ class Router:
         return True
 
     def _keep_single_draft(self, owner, actor):
-        """У человека может быть открыт только один черновик: новый диалог закрывает чужой."""
         if owner.drafts is None or actor not in owner.drafts:
             return
         for other in self.handlers:
