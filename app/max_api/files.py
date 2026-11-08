@@ -1,4 +1,4 @@
-"""Передача файлов через CDN MAX: скачивание вложений и загрузка своих."""
+
 
 import http.client
 import json
@@ -79,7 +79,7 @@ def upload_file(client, name, data):
 
 def transfer(context, url, method, *, limit, body=None, headers=None):
     host, target = cdn_target(url)
-    # Даже URL из ответа MAX не разрешает редиректы и передачу токена на CDN.
+
     connection = http.client.HTTPSConnection(host, timeout=10, context=context)
     try:
         connection.request(method, target, body=body, headers=headers or {})
