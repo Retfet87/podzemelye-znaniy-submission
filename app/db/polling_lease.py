@@ -1,5 +1,3 @@
-"""Один poller на токен и базу; его отдельная сессия не возвращается в пул."""
-
 from hashlib import sha256
 
 import psycopg
@@ -30,7 +28,6 @@ class PollingLease:
         return self
 
     def check(self):
-        # После потери сессии нельзя продолжать без гарантии единственного poller.
         self.conn.execute("SELECT 1")
 
     def close(self):
