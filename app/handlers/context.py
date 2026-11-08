@@ -1,5 +1,3 @@
-"""Зависимости приложения и разобранное входящее событие MAX."""
-
 from dataclasses import dataclass
 
 from app.db.database import Database
@@ -12,7 +10,7 @@ from app.services.today import TodayService
 
 @dataclass(frozen=True)
 class Deps:
-    """Всё, что нужно обработчикам; создаётся один раз при запуске."""
+
 
     client: MaxClient
     db: Database
@@ -38,12 +36,7 @@ class Deps:
 
 @dataclass(frozen=True)
 class Context:
-    """Одно входящее событие, разобранное один раз.
 
-    kind: "message" | "callback" | "ignored".
-    actor — MAX ID человека: автор сообщения или нажавший кнопку (None, если это бот
-    или ID некорректен).
-    """
 
     deps: Deps
     update: dict
