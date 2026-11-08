@@ -1,4 +1,3 @@
-"""Серверная проверка initData MAX без сетевых запросов и обхода учётной записи."""
 
 import hashlib
 import hmac
